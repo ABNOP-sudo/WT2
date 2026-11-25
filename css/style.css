@@ -126,7 +126,9 @@ body.touch-mode #touch-controls { pointer-events: none; }
   display: flex; align-items: center; justify-content: center;
   font-weight: 800; font-size: 17px;
   background: rgba(15, 18, 13, 0.7);
+  transition: border-color .3s;
 }
+#cap-ring span { color: #b6bda8; }
 #cap-ring.captured-ussr { border-color: #d84b3f; color: #ff9c92; }
 #cap-ring.captured-germany { border-color: #b9c2b2; color: #fff; }
 #cap-ring.capt-ussr { border-color: #e07a70; }
