@@ -69,19 +69,64 @@ body.touch-mode #touch-controls { pointer-events: none; }
 }
 #fire-btn:active { background: radial-gradient(circle at 35% 30%, #ffcb5e, #a87820); }
 
-@media (max-width: 760px) {
-  #minimap { width: 130px; height: 130px; top: 56px; right: 10px; }
-  #player-panel { bottom: 8px; padding: 6px 8px; }
-  #killfeed { top: 56px; font-size: 11px; }
-  #menu h1 { font-size: 30px; letter-spacing: 3px; }
-  #center-msg { font-size: 20px; }
-  #joy-zone { bottom: 20px; left: 10px; }
-  #fire-btn { bottom: 34px; right: 14px; }
+@media (max-width: 960px), (max-height: 540px) {
+  #topbar { width: min(560px, 96vw); padding: 4px 10px; }
+  .flag { width: 20px; height: 13px; }
+  .tk-num { font-size: 11px; min-width: 28px; }
+  #cap-ring { width: 30px; height: 30px; font-size: 14px; }
+
+  #killfeed { top: 46px; left: 8px; font-size: 10.5px; max-width: 42vw; }
+  #killfeed li { padding: 2px 6px; margin-bottom: 3px; }
+
+  #minimap { width: 104px; height: 104px; top: 46px; right: 8px; }
+
+  #player-panel { width: min(430px, 88vw); bottom: 6px; padding: 5px 9px; }
+  #panel-top { font-size: 11px; margin-bottom: 3px; }
+  .crew-ico { width: 15px; height: 15px; font-size: 9px; }
+  #module-row { margin-bottom: 4px; }
+  .mod { font-size: 8.5px; padding: 2px 0; }
+  .bar.hp { height: 12px; margin-bottom: 4px; }
+  .bar.hp b { font-size: 9.5px; }
+  .statline { font-size: 10.5px; }
+
+  #center-msg { font-size: 18px; top: 9%; }
+
+  #menu { padding: 14px 10px 20px; }
+  #menu h1 { font-size: 27px; letter-spacing: 3px; }
+  #menu .sub { font-size: 12px; }
+  #tank-grid { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 8px; padding: 10px 8px; }
+  .tank-card h3 { font-size: 13px; }
+  #start-btn { font-size: 17px; padding: 10px 40px; }
+  #bottom-row { gap: 14px; }
+  #controls-help { font-size: 11px; }
+
+  .overlay h2 { font-size: 28px; }
+  .overlay p { font-size: 14px; }
+
+  #joy-zone {
+    bottom: calc(12px + env(safe-area-inset-bottom));
+    left: calc(12px + env(safe-area-inset-left));
+    width: 126px; height: 126px;
+  }
+  #joy-base { width: 72px; height: 72px; }
+  #joy-stick { width: 34px; height: 34px; margin: -17px 0 0 -17px; }
+  #fire-btn {
+    bottom: calc(22px + env(safe-area-inset-bottom));
+    right: calc(14px + env(safe-area-inset-right));
+    width: 72px; height: 72px;
+    font-size: 12px;
+  }
 }
 
-#game-wrap { position: relative; width: 100%; height: 100%; }
+@media (orientation: portrait) and (max-width: 700px) {
+  #joy-zone { bottom: calc(64px + env(safe-area-inset-bottom)); }
+  #fire-btn { bottom: calc(74px + env(safe-area-inset-bottom)); }
+  #player-panel { bottom: 4px; }
+}
 
-#game { position: absolute; inset: 0; display: block; cursor: crosshair; }
+#game-wrap { position: fixed; inset: 0; height: 100dvh; }
+
+#game { position: absolute; inset: 0; width: 100%; height: 100%; display: block; cursor: crosshair; }
 
 .hidden { display: none !important; }
 

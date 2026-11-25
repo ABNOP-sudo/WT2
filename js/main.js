@@ -36,6 +36,8 @@ const G = {
     this.mmCtx = this.minimap.getContext('2d');
     this.resize();
     window.addEventListener('resize', () => this.resize());
+    window.addEventListener('orientationchange', () => setTimeout(() => this.resize(), 250));
+    this.cameraAim = null;
 
     window.addEventListener('keydown', e => {
       this.keys[e.code] = true;
@@ -186,6 +188,9 @@ const G = {
 
     this.genWorld();
     this.spawnTeams(nation, tankId);
+    this.camera.x = this.player.x;
+    this.camera.y = this.player.y;
+    this.cameraAim = null;
     this.message(TEAMS[nation].name + ' — В БОЙ!', 3);
   },
 
@@ -489,6 +494,8 @@ const G = {
     const p = new Tank(this.playerNation, this.player.spec, 260 + U.rand(-60, 60), this.world.h / 2 + U.rand(-200, 200), 0, true);
     this.tanks.push(p);
     this.player = p;
+    this.camera.x = p.x;
+    this.camera.y = p.y;
   },
 
   update(dt) {
@@ -510,28 +517,27 @@ const G = {
       let throttle = (this.keys['KeyW'] ? 1 : 0) + (this.keys['KeyS'] ? -1 : 0);
       let steer = (this.keys['KeyD'] ? 1 : 0) - (this.keys['KeyA'] ? 1 : 0);
       let fire = this.mouse.down;
-      let aimAngle = null;
+      let aimPoint = null;
       if (this.touchMode) {
         if (this.joy.active) {
           throttle = U.clamp(-this.joy.y, -1, 1);
           steer = U.clamp(this.joy.x, -1, 1);
         }
         if (this.touchAim.x !== null && this.time - this.touchAim.t < 4) {
-          aimAngle = Math.atan2(this.touchAim.y - player.y, this.touchAim.x - player.x);
+          aimPoint = { x: this.touchAim.x, y: this.touchAim.y };
         } else {
           const foe = this.nearestEnemyTank(player);
-          if (foe) aimAngle = Math.atan2(foe.y - player.y, foe.x - player.x);
+          if (foe) aimPoint = { x: foe.x, y: foe.y };
         }
         fire = fire || this.touchFire;
       }
+      if (aimPoint === null) {
+        aimPoint = this.screenToWorld(this.mouse.x, this.mouse.y);
+      }
+      this.cameraAim = aimPoint;
       player.ctrl.throttle = throttle;
       player.ctrl.steer = steer;
-      if (aimAngle !== null) {
-        player.ctrl.turret = aimAngle;
-      } else {
-        const mw = this.screenToWorld(this.mouse.x, this.mouse.y);
-        player.ctrl.turret = Math.atan2(mw.y - player.y, mw.x - player.x);
-      }
+      player.ctrl.turret = Math.atan2(aimPoint.y - player.y, aimPoint.x - player.x);
       player.ctrl.fire = fire && player.ammo > 0;
       if (fire && player.ammo <= 0) this.message('БОЕЗАПАС ИСЧЕРПАН', 0.5);
       Sfx.engineUpdate(true, U.clamp(Math.abs(player.speed) / player.spec.speed, 0, 1));
@@ -554,15 +560,21 @@ const G = {
     this.checkEnd();
 
     if (player && player.alive) {
-      const aim = this.screenToWorld(this.mouse.x, this.mouse.y);
-      const tx = U.lerp(player.x, aim.x, 0.18);
-      const ty = U.lerp(player.y, aim.y, 0.18);
-      this.camera.x = U.lerp(this.camera.x, tx, dt * 6);
-      this.camera.y = U.lerp(this.camera.y, ty, dt * 6);
+      let ox = 0, oy = 0;
+      if (this.cameraAim) {
+        ox = U.clamp(this.cameraAim.x - player.x, -this.vw * 0.12, this.vw * 0.12);
+        oy = U.clamp(this.cameraAim.y - player.y, -this.vh * 0.12, this.vh * 0.12);
+      }
+      this.camera.x = U.lerp(this.camera.x, player.x + ox, dt * 7);
+      this.camera.y = U.lerp(this.camera.y, player.y + oy, dt * 7);
+    } else if (player) {
+      this.camera.x = U.lerp(this.camera.x, player.x, dt * 3);
+      this.camera.y = U.lerp(this.camera.y, player.y, dt * 3);
     }
-    const halfW = this.vw / 2, halfH = this.vh / 2;
-    this.camera.x = U.clamp(this.camera.x, halfW, this.world.w - halfW);
-    this.camera.y = U.clamp(this.camera.y, halfH, this.world.h - halfH);
+    const halfW = Math.min(this.vw / 2, this.world.w / 2);
+    const halfH = Math.min(this.vh / 2, this.world.h / 2);
+    this.camera.x = U.clamp(this.camera.x, Math.min(halfW, this.world.w / 2), Math.max(this.world.w - halfW, this.world.w / 2));
+    this.camera.y = U.clamp(this.camera.y, Math.min(halfH, this.world.h / 2), Math.max(this.world.h - halfH, this.world.h / 2));
     if (this.shake > 0) this.shake = Math.max(0, this.shake - dt * 30);
   },
 
