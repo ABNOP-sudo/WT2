@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Стальные Грозы — 2D танковые сражения</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="game-wrap">
+  <canvas id="game"></canvas>
+
+  <div id="hud" class="hidden">
+    <div id="touch-controls" class="hidden">
+      <div id="joy-zone"><div id="joy-base"><div id="joy-stick"></div></div></div>
+      <button id="fire-btn">ОГОНЬ</button>
+    </div>
+    <div id="topbar">
+      <div class="team-score" id="score-ussr">
+        <span class="flag ussr"></span>
+        <div class="bar tickets"><i id="tickets-ussr-fill"></i></div>
+        <span class="tk-num" id="tickets-ussr-n">700</span>
+      </div>
+      <div id="cap-indicator">
+        <div id="cap-line"></div>
+        <div id="cap-letter">А</div>
+      </div>
+      <div class="team-score right" id="score-germany">
+        <span class="tk-num" id="tickets-germany-n">700</span>
+        <div class="bar tickets"><i id="tickets-germany-fill"></i></div>
+        <span class="flag germany"></span>
+      </div>
+    </div>
+
+    <ul id="killfeed"></ul>
+    <div id="center-msg"></div>
+    <canvas id="minimap" width="210" height="210"></canvas>
+
+    <div id="player-panel">
+      <div id="panel-top">
+        <span id="panel-tank-name">—</span>
+        <span id="panel-speed">0 км/ч</span>
+      </div>
+      <div id="crew-row"></div>
+      <div id="module-row">
+        <span class="mod" id="mod-fire">🔥 ПОЖАР</span>
+        <span class="mod" id="mod-track">ГУСЕНИЦА</span>
+        <span class="mod" id="mod-engine">ДВИГАТЕЛЬ</span>
+        <span class="mod" id="mod-gun">ОРУДИЕ</span>
+      </div>
+      <div class="bar hp"><i id="hp-fill"></i><b id="hp-n"></b></div>
+      <div class="statline">
+        <span id="ammo-n">БП: 36</span>
+        <div class="bar reload"><i id="reload-fill"></i></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="menu">
+    <h1>СТАЛЬНЫЕ ГРОЗЫ</h1>
+    <p class="sub">2D танковые сражения · Германия против СССР · Совместные бои с авиацией</p>
+    <div id="nation-tabs">
+      <button data-nation="germany" class="active">🏗Германия</button>
+      <button data-nation="ussr">★ СССР</button>
+    </div>
+    <div id="tank-grid"></div>
+    <div id="tank-details">
+      <div id="detail-inner"></div>
+    </div>
+    <div id="bottom-row">
+      <div id="air-support-info">
+        <b>Авиационная поддержка:</b>
+        <span id="airfighter-info"></span>
+        <span id="airbomber-info"></span>
+      </div>
+      <button id="start-btn">В БОЙ!</button>
+    </div>
+    <div id="controls-help">
+      <b>Управление:</b> W / S — вперёд / назад · A / D — поворот · Мышь — наводка башни · ЛКМ — выстрел
+      · Пулемёт по самолётам стреляет автоматически. Захвати точку «А» или уничтожь всю технику противника.
+    </div>
+  </div>
+
+  <div id="death-overlay" class="overlay hidden">
+    <h2>ТАНК УНИЧТОЖЕН</h2>
+    <p>Возрождение через <b id="respawn-t">8</b> сек</p>
+  </div>
+
+  <div id="result-overlay" class="overlay hidden">
+    <h2 id="result-title"></h2>
+    <p id="result-stats"></p>
+    <button id="again-btn">ЕЩЁ БОЙ</button>
+  </div>
+</div>
+
+<script src="js/utils.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/data.js"></script>
+<script src="js/entities.js"></script>
+<script src="js/ai.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
